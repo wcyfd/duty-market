@@ -1,4 +1,4 @@
-package com.aim.duty.duty_market.service;
+package com.aim.duty.duty_market.module.market.service;
 
 import com.aim.duty.duty_base.entity.base.AbstractProp;
 
