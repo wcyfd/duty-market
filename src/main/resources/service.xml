@@ -11,6 +11,7 @@
 	</bean>
 	<bean id="marketService" class="com.aim.duty.duty_market.module.market.service.MarketServiceImplProxy">
 		<property name="marketService" ref="marketServiceImpl"></property>
+		<property name="mainFrame" ref="mainFrame"></property>
 	</bean>
 
 <!-- 
