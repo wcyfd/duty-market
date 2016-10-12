@@ -1,18 +1,16 @@
 package com.aim.duty.duty_market.module.market.service;
 
-import java.awt.EventQueue;
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.aim.duty.duty_base.cache.ConstantCache;
 import com.aim.duty.duty_base.entity.base.AbstractProp;
-import com.aim.duty.duty_base.entity.base.GameObject;
-import com.aim.duty.duty_base.entity.bo.Brick;
-import com.aim.duty.duty_base.entity.bo.Commodity;
-import com.aim.duty.duty_market.cache.MarketCache;
+import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_SaleCommodity;
 import com.aim.duty.duty_market.ui.MainFrame;
+import com.aim.duty.duty_market.ui.UIController;
 import com.aim.game_base.entity.net.base.Protocal.Response;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 public class MarketServiceImplProxy implements MarketService {
 
@@ -22,38 +20,17 @@ public class MarketServiceImplProxy implements MarketService {
 		this.marketService = marketService;
 	}
 
-	private MainFrame mainFrame;
+	private UIController uiController;
 
-	public void setMainFrame(MainFrame mainFrame) {
-		this.mainFrame = mainFrame;
+	public void setUiController(UIController uiController) {
+		this.uiController = uiController;
 	}
 
 	@Override
 	public void serviceInit() {
 		// TODO Auto-generated method stub
 		marketService.serviceInit();
-		MainFrame.start(mainFrame);
-
-		// EventQueue.invokeLater(new Runnable() {
-		// @Override
-		// public void run() {
-		//
-		// JTable table = mainFrame.getTable();
-		// DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-		// tableModel.getDataVector().clear();
-		//
-		// for (Commodity commodity : MarketCache.commodityMap.values())
-		// addCommodity(table, commodity);
-		//
-		// }
-		// });
-
-	}
-
-	private void addCommodity(JTable table, byte propType, AbstractProp prop, int num, int price) {
-		DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-		model.addRow(new Object[] { prop.getId(), propType, prop, num, price });
+		uiController.start();
 	}
 
 	@Override
@@ -72,14 +49,12 @@ public class MarketServiceImplProxy implements MarketService {
 	public Response.Builder saleCommodity(int price, byte propType, ByteString prop) {
 		// TODO Auto-generated method stub
 		Response.Builder builder = marketService.saleCommodity(price, propType, prop);
-
 		try {
-			AbstractProp b = (AbstractProp) MarketCache.salePropClassMap.get(propType).newInstance();
-			b.deserialize(prop);
-			addCommodity(mainFrame.getTable(), b.getPropType(), b, b.getNum(), price);
-		} catch (InstantiationException | IllegalAccessException e) {
+			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(builder.getData());
+			uiController.noticeAdd(data.getCommodityId());
+		} catch (InvalidProtocolBufferException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
 
 		return builder;

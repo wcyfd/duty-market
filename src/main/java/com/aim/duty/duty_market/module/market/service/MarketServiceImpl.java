@@ -3,8 +3,10 @@ package com.aim.duty.duty_market.module.market.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aim.duty.duty_base.cache.ConstantCache;
 import com.aim.duty.duty_base.entity.base.AbstractProp;
 import com.aim.duty.duty_base.entity.bo.Commodity;
+import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_SaleCommodity;
 import com.aim.duty.duty_market.cache.MarketCache;
 import com.aim.game_base.entity.net.base.Protocal.Response;
 import com.google.protobuf.ByteString;
@@ -25,7 +27,7 @@ public class MarketServiceImpl implements MarketService {
 			ByteString salePropData = commodity.getSalePropData();
 			byte propType = commodity.getSalePropType();
 			try {
-				AbstractProp saleProp = (AbstractProp) MarketCache.salePropClassMap.get(propType).newInstance();
+				AbstractProp saleProp = (AbstractProp) ConstantCache.salePropClassMap.get(propType).newInstance();
 				saleProp.deserialize(salePropData);
 				commodity.setSaleProp(saleProp);
 			} catch (InstantiationException | IllegalAccessException e) {
@@ -49,11 +51,24 @@ public class MarketServiceImpl implements MarketService {
 
 	@Override
 	public Response.Builder saleCommodity(int price, byte propType, ByteString byteString) {
-		try {
-			AbstractProp saleProp = (AbstractProp) MarketCache.salePropClassMap.get(propType).newInstance();
+		Response.Builder response = Response.newBuilder();
+		SC_SaleCommodity.Builder scSaleCommodity = SC_SaleCommodity.newBuilder();	
+		AbstractProp saleProp = null;
+			try {
+				saleProp = (AbstractProp) ConstantCache.salePropClassMap.get(propType).newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(saleProp == null){
+				response.setData(scSaleCommodity.setSuccess(0).build().toByteString());
+				return response;
+			}
 			saleProp.deserialize(byteString);
 
 			Commodity commodity = new Commodity();
+			int commodityId = MarketCache.getCommodityId();
+			commodity.setId(commodityId);
 			commodity.setSinglePrice(price);
 			commodity.setSaleProp(saleProp);
 			commodity.setSalePropType(propType);
@@ -61,12 +76,11 @@ public class MarketServiceImpl implements MarketService {
 
 			MarketCache.propTypeCommodityMap.get(propType).put(commodity.getId(), commodity);
 			MarketCache.commodityMap.put(commodity.getId(), commodity);
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+			return response.setData(scSaleCommodity.setSuccess(1).setCommodityId(commodityId).build().toByteString());
+			
+	
 
-		return null;
 	}
 
 	@Override

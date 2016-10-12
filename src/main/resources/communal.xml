@@ -10,6 +10,9 @@
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd 
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
+	<bean id="uiController" class="com.aim.duty.duty_market.ui.UIController"
+		p:mainFrame-ref="mainFrame">
+	</bean>
 	<bean id="mainFrame" class="com.aim.duty.duty_market.ui.MainFrame"></bean>
-	
+
 </beans>

@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 
+import com.aim.duty.duty_base.cache.ConstantCache;
 import com.aim.duty.duty_base.entity.base.Constant;
 import com.aim.duty.duty_base.entity.bo.Brick;
 import com.aim.duty.duty_base.entity.bo.Magic;
@@ -21,20 +22,18 @@ import com.aim.game_base.net.WanServer.WanServerType;
  * Hello world!
  *
  */
-public class DutyMarketApp {	
+public class DutyMarketApp {
 	private static final String START_CONFIG_FILE = "ApplicationContext.xml";
 
 	public static void main(String[] args) {
 		SpringContext.initSpringCtx(START_CONFIG_FILE);
 
+		ConstantCache.init();
+
 		MarketService marketService = SpringContext.getBean("marketService");
 		marketService.serviceInit();
 
-		Util.threadSleep(500);
-
-		
-
 		WanServer.startServer(new ClientHandler(), new InetSocketAddress(10001), WanServerType.TCP);
 	}
-	
+
 }
