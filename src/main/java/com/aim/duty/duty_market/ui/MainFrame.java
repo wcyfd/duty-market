@@ -6,7 +6,11 @@ package com.aim.duty.duty_market.ui;
 
 import javax.swing.JTable;
 
-import com.aim.duty.duty_market.cache.MarketConstantCache;
+import com.aim.duty.duty_base.entity.base.Constant;
+import com.aim.duty.duty_base.entity.bo.Brick;
+import com.aim.duty.duty_base.entity.bo.Magic;
+import com.aim.duty.duty_market.module.market.service.MarketService;
+import com.aim.game_base.net.SpringContext;
 
 /**
  *
@@ -19,27 +23,27 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
     	initCode();
-        initComponents();
+        initComponents();        
     }
 
     private void initCode() {
 		// TODO Auto-generated method stub
-    	try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+    	  try {
+              for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                  if ("Nimbus".equals(info.getName())) {
+                      javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                      break;
+                  }
+              }
+          } catch (ClassNotFoundException ex) {
+              java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+          } catch (InstantiationException ex) {
+              java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+          } catch (IllegalAccessException ex) {
+              java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+          } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+              java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+          }
 	}
 
 	/**
@@ -56,6 +60,10 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        refreshjButton = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,7 +72,7 @@ public class MainFrame extends javax.swing.JFrame {
 
             },
             new String [] {
-                "编号", "商品名", "数量", "单价"
+                "编号", "商品类型", "商品名", "数量", "单价"
             }
         ));
         jTable1.setEnabled(false);
@@ -74,7 +82,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -83,15 +91,48 @@ public class MainFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("物品1", jPanel2);
 
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        refreshjButton.setText("刷新");
+        refreshjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshjButtonActionPerformed(evt);
+            }
+        });
+        
+        addButton.setText("add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(addButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refreshjButton))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refreshjButton)
+                    .addComponent(addButton)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -108,10 +149,37 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
+    private void refreshjButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    	
+    	Brick brick = new Brick();
+
+		Magic magic = new Magic();
+		magic.setDuration(29);
+		magic.setMagicId(2001);
+		magic.setValue(5302);
+		brick.addMagic(magic);
+
+		Magic magic2 = new Magic();
+		magic2.setDuration(33);
+		magic2.setMagicId(4001);
+		magic2.setValue(6543);
+		brick.addMagic(magic2);
+		
+		brick.setMineId(444);
+		brick.setNum(5);
+
+		MarketService marketService = SpringContext.getBean("marketService");
+		marketService.saleCommodity(12, Constant.BRICK, brick.serialize());
+    }
     /**
      * @param args the command line arguments
      */
-    public static void start(String[] args) {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -138,30 +206,31 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-				MainFrame frame = new MainFrame();
-				MarketConstantCache.mainFrame = frame;
-				frame.setVisible(true);
+                new MainFrame().setVisible(true);
             }
         });
     }
     
     public static void start(final MainFrame frame){
-    	  java.awt.EventQueue.invokeLater(new Runnable() {
-              public void run() {
-  				frame.setVisible(true);
-              }
-          });
+    	 java.awt.EventQueue.invokeLater(new Runnable() {
+             public void run() {
+                 frame.setVisible(true);
+             }
+         });
     }
-    
     // Variables declaration - do not modify
+    private javax.swing.JButton addButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    
-    public JTable getTable(){
-    	return jTable1;
-    }
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton refreshjButton;
     // End of variables declaration
+	public JTable getTable() {
+		// TODO Auto-generated method stub
+		return jTable1;
+	}
 }

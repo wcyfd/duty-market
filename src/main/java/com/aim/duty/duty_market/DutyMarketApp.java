@@ -32,24 +32,7 @@ public class DutyMarketApp {
 
 		Util.threadSleep(500);
 
-		Brick brick = new Brick();
-
-		Magic magic = new Magic();
-		magic.setDuration(29);
-		magic.setMagicId(2001);
-		magic.setValue(5302);
-		brick.addMagic(magic);
-
-		Magic magic2 = new Magic();
-		magic2.setDuration(33);
-		magic2.setMagicId(4001);
-		magic2.setValue(6543);
-		brick.addMagic(magic2);
 		
-		brick.setMineId(444);
-		brick.setNum(5);
-
-		marketService.saleCommodity(12, Constant.BRICK, brick.serialize());
 
 		WanServer.startServer(new ClientHandler(), new InetSocketAddress(10001), WanServerType.TCP);
 	}
