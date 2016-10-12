@@ -52,9 +52,9 @@ public class MarketServiceImplProxy implements MarketService {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		int count = model.getRowCount();
 		System.out.println("count:" + count);
-		AbstractProp prop = commodity.getProp();
+		AbstractProp prop = commodity.getSaleProp();
 
-		model.addRow(new Object[] { prop.getId(), commodity, commodity.getNum(), commodity.getSinglePrice() });
+		model.addRow(new Object[] { prop.getId(), commodity, commodity.getSaleNum(), commodity.getSinglePrice() });
 	}
 
 	@Override
