@@ -14,5 +14,4 @@
 		p:mainFrame-ref="mainFrame">
 	</bean>
 	<bean id="mainFrame" class="com.aim.duty.duty_market.ui.MainFrame"></bean>
-
 </beans>

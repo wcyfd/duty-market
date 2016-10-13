@@ -7,12 +7,15 @@
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd 
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-	<bean id="marketServiceImpl" class="com.aim.duty.duty_market.module.market.service.MarketServiceImpl">
+	<bean id="marketServiceImpl" class="com.aim.duty.duty_market.module.market.service.MarketServiceImpl">	
+		<property name="propService" ref="propServiceImpl"></property>
 	</bean>
-	<bean id="marketService" class="com.aim.duty.duty_market.module.market.service.MarketServiceImplProxy">
+	<bean id="marketService" class="com.aim.duty.duty_market.module.market.service.MarketServiceImplProxy" >
 		<property name="marketService" ref="marketServiceImpl"></property>
 		<property name="uiController" ref="uiController"></property>
 	</bean>
+	
+	<bean id="propServiceImpl" class="com.aim.duty.duty_base.service.prop.PropServiceImpl"></bean>
 
 <!-- 
 	<bean id="testService" class="com.randioo.owlofwar.owlofwar.game.moudle.test.service.TestServiceImpl">

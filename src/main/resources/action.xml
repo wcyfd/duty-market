@@ -7,11 +7,13 @@
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd 
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-<!-- 
-	<bean id="navigation" class="com.demo.mmo.mmo_server.game.navigation.ActionNavigation" />
+
+	<bean id="navigation" class="com.aim.duty.duty_market.navigation.ActionNavigation" 
+		p:marketSaleCommodityAction-ref="marketSaleCommodityAction" 
 		
-	<bean id="fightJoinAction" class="com.demo.mmo.mmo_server.game.module.fight.action.FightJoinAction" p:fightService-ref="fightService" />
-	<bean id="fightMoveAction" class="com.demo.mmo.mmo_server.game.module.fight.action.FightMoveAction" p:fightService-ref="fightService" />
-	 -->
+		/>
+
+	<bean id="marketSaleCommodityAction" class="com.aim.duty.duty_market.module.market.action.MarketSaleCommodityAction" p:marketService-ref="marketService" />
+
 
 </beans>

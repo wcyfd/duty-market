@@ -1,16 +1,17 @@
 package com.aim.duty.duty_market.ui;
 
-import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
 
-import javax.swing.table.DefaultTableModel;
-
-import com.aim.duty.duty_base.cache.ConstantCache;
-import com.aim.duty.duty_base.entity.base.AbstractProp;
+import com.aim.duty.duty_base.common.ErrorCode;
 import com.aim.duty.duty_base.entity.bo.Commodity;
 import com.aim.duty.duty_market.cache.MarketCache;
+import com.aim.duty.duty_market.module.market.service.MarketService;
+import com.aim.game_base.entity.net.base.Protocal.SC.Builder;
 import com.google.protobuf.ByteString;
 
-public class UIController {
+public class UIController extends Observable {
 	private MainFrame mainFrame;
 
 	public void setMainFrame(MainFrame mainFrame) {
@@ -19,34 +20,29 @@ public class UIController {
 
 	public void start() {
 		MainFrame.start(mainFrame);
+		this.addObserver(mainFrame);
 	}
 
 	public void noticeAdd(int commodityId) {
+		setChanged();
+		Commodity commodity = MarketCache.commodityMap.get(commodityId);
+		List list = new ArrayList();
+		list.add("sale");
+		list.add(commodity);
+		this.notifyObservers(list);
+	}
 
-		final Commodity commodity = MarketCache.commodityMap.get(commodityId);
-		final byte propType = commodity.getSalePropType();
-		final int price = commodity.getSinglePrice();
-		ByteString propData = commodity.getSalePropData();
-
-		try {
-			final AbstractProp prop = (AbstractProp) ConstantCache.salePropClassMap.get(propType).newInstance();
-			prop.deserialize(propData);
-			EventQueue.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					DefaultTableModel model = (DefaultTableModel) mainFrame.getTable().getModel();
-
-					model.addRow(new Object[] { commodity.getId(), propType, prop, prop.getNum(), price });
-
-				}
-
-			});
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void noticeBuy(int commodityId, int num, int success) {
+		if (success != ErrorCode.SUCCESS) {
+			return;
 		}
 
+		this.setChanged();
+		List list = new ArrayList();
+		list.add("buy");
+		list.add(commodityId);
+		list.add(num);
+		this.notifyObservers(list);
 	}
+
 }

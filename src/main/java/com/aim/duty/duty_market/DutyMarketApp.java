@@ -6,14 +6,15 @@ import java.nio.charset.Charset;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 
 import com.aim.duty.duty_base.cache.ConstantCache;
-import com.aim.duty.duty_base.entity.base.Constant;
 import com.aim.duty.duty_base.entity.bo.Brick;
 import com.aim.duty.duty_base.entity.bo.Magic;
+import com.aim.duty.duty_base.service.prop.PropConstant;
 import com.aim.duty.duty_base.util.Util;
 import com.aim.duty.duty_market.module.market.service.MarketService;
-import com.aim.duty.duty_market.net.ClientHandler;
+import com.aim.duty.duty_market.navigation.ActionNavigation;
+import com.aim.duty.duty_market.net.ServerHandler;
 import com.aim.game_base.net.IoHandlerAdapter;
-import com.aim.game_base.net.MessageCodecFactory;
+import com.aim.game_base.net.ServerMessageCodecFactory;
 import com.aim.game_base.net.SpringContext;
 import com.aim.game_base.net.WanServer;
 import com.aim.game_base.net.WanServer.WanServerType;
@@ -29,11 +30,12 @@ public class DutyMarketApp {
 		SpringContext.initSpringCtx(START_CONFIG_FILE);
 
 		ConstantCache.init();
+		ActionNavigation.init();
 
 		MarketService marketService = SpringContext.getBean("marketService");
 		marketService.serviceInit();
 
-		WanServer.startServer(new ClientHandler(), new InetSocketAddress(10001), WanServerType.TCP);
+		WanServer.startServer(new ServerHandler(), new InetSocketAddress(10001), WanServerType.TCP);
 	}
 
 }

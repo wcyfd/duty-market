@@ -2,6 +2,9 @@ package com.aim.duty.duty_market.net;
 
 import org.apache.mina.core.session.IoSession;
 
+import com.aim.duty.duty_market.navigation.ActionNavigation;
+import com.aim.game_base.entity.net.base.Protocal.CS;
+import com.aim.game_base.navigation.ActionSupport;
 import com.aim.game_base.net.IoHandlerAdapter;
 
 //import byCodeGame.game.cache.local.RoleCache;
@@ -14,7 +17,7 @@ import com.aim.game_base.net.IoHandlerAdapter;
  * 消息处理器
  * 
  */
-public class ClientHandler extends IoHandlerAdapter {
+public class ServerHandler extends IoHandlerAdapter {
 
 	// 当一个客户端连结进入时
 	@Override
@@ -43,20 +46,21 @@ public class ClientHandler extends IoHandlerAdapter {
 //				SessionCloseHandler.manipulate(role);
 //			}
 //		}
+		System.out.println("market system 用户断开");
 	}
 
 	// 异常捕获
 	@Override
 	public void exceptionCaught(IoSession session, Throwable e) throws Exception {
 
-//		if (e.getMessage().equals("远程主机强迫关闭了一个现有的连接。")) {
-//			System.out.println(e.getMessage());
-//			this.sessionClosed(session);
-//		} else {
-//			System.err.println("程序业务逻辑出现异常,已处理该账户信息,并强制下线！" + (Integer) session.getAttribute("roleId"));
-//			e.printStackTrace();
-//			this.sessionClosed(session);
-//		}
+		if (e.getMessage().equals("远程主机强迫关闭了一个现有的连接。")) {
+			System.out.println(e.getMessage());
+			this.sessionClosed(session);
+		} else {
+			System.err.println("程序业务逻辑出现异常,已处理该账户信息,并强制下线！" + (Integer) session.getAttribute("roleId"));
+			e.printStackTrace();
+			this.sessionClosed(session);
+		}
 	}
 
 	// 当客户端发送的消息到达时
@@ -95,6 +99,30 @@ public class ClientHandler extends IoHandlerAdapter {
 ////			 session.close(true);
 //			// }
 //		}
+		
+		
+		CS message = (CS) messageObj;
+
+		if (null == message) {
+			System.out.println("ERR_MESSAGE_REC");
+			return;
+		}
+		ActionSupport action = ActionNavigation.getAction(message.getProtocal());
+		Integer roleId = (Integer) session.getAttribute("roleId");
+
+		System.out.println("服务器接收用户：" + roleId + "的消息，请求指令号为:" + message.getProtocal());
+
+		try {
+			action.execute(message.getData(), session);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("伪造的协议ID：" + message.getProtocal());
+			// 判断是否属于无效的协议号 TODO 处理方式可能需要变更
+			// if(e.getClass().equals(NumberFakeException.class))
+			// {
+			session.close(true);
+			// }
+		}
 	}
 
 	// 当发送消息成功时调用这个方法，注意这里的措辞，发送成功之后，也就是说发送消息是不能用这个方法的。

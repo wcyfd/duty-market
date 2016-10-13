@@ -1,14 +1,11 @@
 package com.aim.duty.duty_market.module.market.service;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import java.util.Observer;
 
-import com.aim.duty.duty_base.cache.ConstantCache;
-import com.aim.duty.duty_base.entity.base.AbstractProp;
+import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_BuyCommodity;
 import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_SaleCommodity;
-import com.aim.duty.duty_market.ui.MainFrame;
 import com.aim.duty.duty_market.ui.UIController;
-import com.aim.game_base.entity.net.base.Protocal.Response;
+import com.aim.game_base.entity.net.base.Protocal.SC;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -46,9 +43,9 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public Response.Builder saleCommodity(int price, byte propType, ByteString prop) {
+	public SC.Builder saleCommodity(int price, byte propType, ByteString prop) {
 		// TODO Auto-generated method stub
-		Response.Builder builder = marketService.saleCommodity(price, propType, prop);
+		SC.Builder builder = marketService.saleCommodity(price, propType, prop);
 		try {
 			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(builder.getData());
 			uiController.noticeAdd(data.getCommodityId());
@@ -62,9 +59,19 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public void buyCommodity(int commodityId, int num) {
+	public SC.Builder buyCommodity(int commodityId, int num) {
 		// TODO Auto-generated method stub
+		SC.Builder builder = marketService.buyCommodity(commodityId, num);
 
+		try {
+			SC_BuyCommodity sc = SC_BuyCommodity.parseFrom(builder.getData());
+			uiController.noticeBuy(commodityId,num,sc.getSuccess());
+		} catch (InvalidProtocolBufferException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return builder;
 	}
 
 }
