@@ -16,7 +16,7 @@ public class ActionNavigation {
 	}
 
 	public static void init() {
-		navigation.put(101, marketSaleCommodityAction);
+		navigation.put(ProtocalId.BUY_COMMODITY, marketSaleCommodityAction);
 	}
 
 	public static void setMarketSaleCommodityAction(MarketSaleCommodityAction marketSaleCommodityAction) {
