@@ -8,23 +8,11 @@ import java.awt.EventQueue;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Vector;
 
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import com.aim.duty.duty_base.cache.ConstantCache;
-import com.aim.duty.duty_base.entity.base.AbstractProp;
-import com.aim.duty.duty_base.entity.bo.Brick;
-import com.aim.duty.duty_base.entity.bo.Commodity;
-import com.aim.duty.duty_base.entity.bo.Magic;
-import com.aim.duty.duty_base.service.prop.PropConstant;
-import com.aim.duty.duty_base.util.Util;
 import com.aim.duty.duty_market.cache.MarketCache;
-import com.aim.duty.duty_market.module.market.service.MarketService;
-import com.aim.game_base.net.SpringContext;
-import com.aim.game_base.net.Utils;
-import com.google.protobuf.ByteString;
+import com.aim.duty.duty_market_entity.Commodity;
 
 /**
  *
@@ -116,39 +104,25 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 
 		javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 		jPanel1.setLayout(jPanel1Layout);
-		jPanel1Layout
-				.setHorizontalGroup(jPanel1Layout
-						.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								jPanel1Layout
-										.createSequentialGroup()
-										.addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 522,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
+		jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(jPanel1Layout.createSequentialGroup()
+						.addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 522,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+						.addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+								.addGroup(jPanel1Layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
+										.addComponent(addButton)
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												jPanel1Layout
-														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-														.addComponent(jScrollPane2,
-																javax.swing.GroupLayout.DEFAULT_SIZE, 291,
-																Short.MAX_VALUE)
-														.addGroup(
-																jPanel1Layout
-																		.createSequentialGroup()
-																		.addGap(0, 0, Short.MAX_VALUE)
-																		.addComponent(addButton)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																		.addComponent(refreshjButton)))));
-		jPanel1Layout.setVerticalGroup(jPanel1Layout
-				.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addComponent(jTabbedPane1)
-				.addGroup(
-						jPanel1Layout
-								.createSequentialGroup()
-								.addComponent(jScrollPane2)
-								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-								.addGroup(
-										jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+										.addComponent(refreshjButton)))));
+		jPanel1Layout
+				.setVerticalGroup(
+						jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addComponent(jTabbedPane1)
+								.addGroup(jPanel1Layout.createSequentialGroup().addComponent(jScrollPane2)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addGroup(jPanel1Layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 												.addComponent(refreshjButton).addComponent(addButton))));
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -163,61 +137,62 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 
 	private void refreshjButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
-		Thread t = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				while (true) {
-					Util.threadSleep(500);
-					MarketService marketService = SpringContext.getBean("marketService");
-					marketService.buyCommodity(Utils.getRandomNum(1, 57), 1);
-				}
-			}
-		});
-		t.start();
+//		Thread t = new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				while (true) {
+//					Util.threadSleep(500);
+//					MarketService marketService = SpringContext.getBean("marketService");
+//					marketService.buyCommodity(Utils.getRandomNum(1, 57), 1);
+//				}
+//			}
+//		});
+//		t.start();
 	}
 
 	private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO add your handling code here:
 
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				for (int i = 0; i < 50; i++) {
-					Util.threadSleep(500);
-
-					Brick brick = new Brick();
-
-					Magic magic = new Magic();
-					magic.setDuration(29);
-					magic.setMagicId(2001);
-					magic.setValue(5302);
-					brick.addMagic(magic);
-
-					Magic magic2 = new Magic();
-					magic2.setDuration(33);
-					magic2.setMagicId(4001);
-					magic2.setValue(6543);
-					brick.addMagic(magic2);
-
-					brick.setMineId(444);
-					brick.setNum(50);
-
-					MarketService marketService = SpringContext.getBean("marketService");
-					marketService.saleCommodity(12, PropConstant.BRICK, brick.serialize());
-
-				}
-
-			}
-		}).start();
-		;
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				for (int i = 0; i < 50; i++) {
+//					Util.threadSleep(500);
+//
+//					Brick brick = new Brick();
+//
+//					Magic magic = new Magic();
+//					magic.setDuration(29);
+//					magic.setMagicId(2001);
+//					magic.setValue(5302);
+//					brick.addMagic(magic);
+//
+//					Magic magic2 = new Magic();
+//					magic2.setDuration(33);
+//					magic2.setMagicId(4001);
+//					magic2.setValue(6543);
+//					brick.addMagic(magic2);
+//
+//					brick.setMineId(444);
+//					brick.setNum(50);
+//
+//					MarketService marketService = SpringContext.getBean("marketService");
+//					marketService.saleCommodity(12, PropConstant.BRICK, 50, "砖头", brick.serialize());
+//
+//				}
+//
+//			}
+//		}).start();
+//		
 	}
 
 	/**
-	 * @param args the command line arguments
+	 * @param args
+	 *            the command line arguments
 	 */
 	public static void main(String args[]) {
 		/* Set the Nimbus look and feel */
@@ -290,29 +265,21 @@ public class MainFrame extends javax.swing.JFrame implements Observer {
 	}
 
 	private void add(List list) {
-		final Commodity commodity = (Commodity) list.get(1);
-		final byte propType = commodity.getSalePropType();
-		final int price = commodity.getSinglePrice();
-		ByteString propData = commodity.getSalePropData();
+		final int commodityId = (int) list.get(1);
 
-		try {
-			final AbstractProp prop = (AbstractProp) ConstantCache.salePropClassMap.get(propType).newInstance();
-			prop.deserialize(propData);
-			EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-					model.addRow(new Object[] { commodity.getId(), propType, prop, prop.getNum(), price });
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+				Commodity commodity = MarketCache.commodityMap.get(commodityId);
+				model.addRow(new Object[] { commodity.getId(), commodity.getSalePropType(), commodity.getSaleName(),
+						commodity.getSaleNum(), commodity.getSinglePrice() });
 
-				}
+			}
 
-			});
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		});
 	}
 
 	private void buy(List list) {

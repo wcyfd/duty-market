@@ -1,49 +1,41 @@
 package com.aim.duty.duty_market.module.market.service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.aim.duty.duty_base.cache.ConstantCache;
 import com.aim.duty.duty_base.common.ErrorCode;
-import com.aim.duty.duty_base.entity.base.AbstractProp;
-import com.aim.duty.duty_base.entity.bo.Commodity;
-import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_BuyCommodity;
-import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_SaleCommodity;
-import com.aim.duty.duty_base.service.prop.PropService;
 import com.aim.duty.duty_market.cache.MarketCache;
+import com.aim.duty.duty_market_entity.Commodity;
+import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_BuyCommodity;
+import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_SaleCommodity;
 import com.aim.game_base.entity.net.base.Protocal.SC;
 import com.google.protobuf.ByteString;
 
 public class MarketServiceImpl implements MarketService {
 
-	private PropService propService;
-
-	public void setPropService(PropService propService) {
-		this.propService = propService;
-	}
-
 	@Override
 	public void serviceInit() {
 		// TODO Auto-generated method stub
-		MarketCache.init();
-
 		List<Commodity> allCommodity = new ArrayList<>();
-		this.commodityDeserialize(allCommodity);
+		this.loadCommodities(allCommodity);
 	}
 
-	private void commodityDeserialize(List<Commodity> allCommodity) {
-		for (Commodity commodity : allCommodity) {
-			ByteString salePropData = commodity.getSalePropData();
-			byte propType = commodity.getSalePropType();
-			try {
-				AbstractProp saleProp = (AbstractProp) ConstantCache.salePropClassMap.get(propType).newInstance();
-				saleProp.deserialize(salePropData);
-				commodity.setSaleProp(saleProp);
-			} catch (InstantiationException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	private void loadCommodities(List<Commodity> allCommodity) {
+		for (Commodity c : allCommodity) {
+			this.addCommodity(c);
 		}
+	}
+
+	private void addCommodity(Commodity c) {
+		MarketCache.commodityMap.put(c.getId(), c);
+		Map<Integer, Commodity> map = MarketCache.propTypeCommodityMap.get(c.getSalePropType());
+		if (map == null) {
+			map = new LinkedHashMap<>();
+			MarketCache.propTypeCommodityMap.put(c.getSalePropType(), map);
+		}
+		map.put(c.getId(), c);
 	}
 
 	@Override
@@ -59,34 +51,23 @@ public class MarketServiceImpl implements MarketService {
 	}
 
 	@Override
-	public SC.Builder saleCommodity(int price, byte propType, ByteString byteString) {
+	public SC.Builder saleCommodity(int price, byte propType, int num, String name, ByteString byteString) {
 		SC.Builder response = SC.newBuilder();
 		SC_SaleCommodity.Builder scSaleCommodity = SC_SaleCommodity.newBuilder();
-		AbstractProp saleProp = null;
-		try {
-			saleProp = (AbstractProp) ConstantCache.salePropClassMap.get(propType).newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (saleProp == null) {
-			response.setData(scSaleCommodity.setSuccess(0).build().toByteString());
-			return response;
-		}
-		saleProp.deserialize(byteString);
 
 		Commodity commodity = new Commodity();
 		int commodityId = MarketCache.getCommodityId();
 		commodity.setId(commodityId);
 		commodity.setSinglePrice(price);
-		commodity.setSaleProp(saleProp);
 		commodity.setSalePropType(propType);
-		commodity.setSaleNum(saleProp.getNum());
+		commodity.setSaleNum(num);
+		commodity.setSaleName(name);
+		commodity.setSalePropData(byteString);
 
-		MarketCache.propTypeCommodityMap.get(propType).put(commodity.getId(), commodity);
-		MarketCache.commodityMap.put(commodity.getId(), commodity);
+		this.addCommodity(commodity);
 
-		return response.setData(scSaleCommodity.setSuccess(1).setCommodityId(commodityId).build().toByteString());
+		return response.setData(
+				scSaleCommodity.setSuccess(ErrorCode.SUCCESS).setCommodityId(commodityId).build().toByteString());
 
 	}
 
@@ -100,18 +81,21 @@ public class MarketServiceImpl implements MarketService {
 			sc.setSuccess(ErrorCode.MARKET_NO_COMMODITY);
 			return builder.setData(sc.build().toByteString());
 		}
-		AbstractProp prop = commodity.getSaleProp();
-		AbstractProp targetProp = propService.extract(prop, num);
 
-		if (targetProp.getNum() != num) {
+		int sourceNum = commodity.getSaleNum();
+		int remainCount = sourceNum - num;
+
+		commodity.setSaleNum(remainCount >= 0 ? remainCount : 0);
+
+		if (commodity.getSaleNum() == sourceNum) {
 			sc.setSuccess(ErrorCode.MARKET_COMMODITY_NOT_ENOUGH);
 			return builder.setData(sc.build().toByteString());
 		}
 
-		sc.setAbstractProp(targetProp.serialize());
+		sc.setAbstractProp(commodity.getSalePropData());
 
-		if (prop.getNum() <= 0) {
-			MarketCache.propTypeCommodityMap.get(prop.getPropType()).remove(commodity.getId());
+		if (commodity.getSaleNum() <= 0) {
+			MarketCache.propTypeCommodityMap.get(commodity.getSalePropType()).remove(commodity.getId());
 			MarketCache.commodityMap.remove(commodity.getId());
 		}
 		return builder.setData(sc.setSuccess(ErrorCode.SUCCESS).build().toByteString());

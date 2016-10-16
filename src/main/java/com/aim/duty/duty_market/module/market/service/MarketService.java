@@ -11,7 +11,7 @@ public interface MarketService {
 
 	public void showCommoditiesByDuty(byte duty);
 
-	public Builder saleCommodity(int price,byte propType, ByteString byteString);
+	public Builder saleCommodity(int price,byte propType, int num,String name,ByteString byteString);
 
 	public Builder buyCommodity(int commodityId,int num);
 }

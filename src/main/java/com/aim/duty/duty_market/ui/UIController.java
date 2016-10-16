@@ -5,11 +5,8 @@ import java.util.List;
 import java.util.Observable;
 
 import com.aim.duty.duty_base.common.ErrorCode;
-import com.aim.duty.duty_base.entity.bo.Commodity;
 import com.aim.duty.duty_market.cache.MarketCache;
-import com.aim.duty.duty_market.module.market.service.MarketService;
-import com.aim.game_base.entity.net.base.Protocal.SC.Builder;
-import com.google.protobuf.ByteString;
+import com.aim.duty.duty_market_entity.Commodity;
 
 public class UIController extends Observable {
 	private MainFrame mainFrame;
@@ -25,10 +22,9 @@ public class UIController extends Observable {
 
 	public void noticeAdd(int commodityId) {
 		setChanged();
-		Commodity commodity = MarketCache.commodityMap.get(commodityId);
 		List list = new ArrayList();
 		list.add("sale");
-		list.add(commodity);
+		list.add(commodityId);
 		this.notifyObservers(list);
 	}
 

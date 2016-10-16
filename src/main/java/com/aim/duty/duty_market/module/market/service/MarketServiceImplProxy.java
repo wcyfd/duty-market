@@ -1,10 +1,8 @@
 package com.aim.duty.duty_market.module.market.service;
 
-import java.util.Observer;
-
-import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_BuyCommodity;
-import com.aim.duty.duty_base.entity.protobuf.protocal.market.Market.SC_SaleCommodity;
 import com.aim.duty.duty_market.ui.UIController;
+import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_BuyCommodity;
+import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_SaleCommodity;
 import com.aim.game_base.entity.net.base.Protocal.SC;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -43,9 +41,9 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public SC.Builder saleCommodity(int price, byte propType, ByteString prop) {
+	public SC.Builder saleCommodity(int price, byte propType,int num,String name, ByteString prop) {
 		// TODO Auto-generated method stub
-		SC.Builder builder = marketService.saleCommodity(price, propType, prop);
+		SC.Builder builder = marketService.saleCommodity(price, propType,num,name, prop);
 		try {
 			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(builder.getData());
 			uiController.noticeAdd(data.getCommodityId());
