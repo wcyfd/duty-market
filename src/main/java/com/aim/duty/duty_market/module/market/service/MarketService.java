@@ -1,5 +1,6 @@
 package com.aim.duty.duty_market.module.market.service;
 
+import com.aim.game_base.entity.net.base.Protocal.SC;
 import com.aim.game_base.entity.net.base.Protocal.SC.Builder;
 import com.google.protobuf.ByteString;
 
@@ -11,7 +12,7 @@ public interface MarketService {
 
 	public void showCommoditiesByDuty(byte duty);
 
-	public Builder saleCommodity(int price,byte propType, int num,String name,ByteString byteString);
+	public SC saleCommodity(int price,byte propType, int num,String name,ByteString byteString);
 
-	public Builder buyCommodity(int commodityId,int num);
+	public SC buyCommodity(int commodityId,int num);
 }

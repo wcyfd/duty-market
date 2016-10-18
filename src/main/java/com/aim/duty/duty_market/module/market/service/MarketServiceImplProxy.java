@@ -41,35 +41,35 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public SC.Builder saleCommodity(int price, byte propType,int num,String name, ByteString prop) {
+	public SC saleCommodity(int price, byte propType,int num,String name, ByteString prop) {
 		// TODO Auto-generated method stub
-		SC.Builder builder = marketService.saleCommodity(price, propType,num,name, prop);
+		SC sc = marketService.saleCommodity(price, propType,num,name, prop);
 		try {
-			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(builder.getData());
+			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(sc.getData());
 			uiController.noticeAdd(data.getCommodityId());
 		} catch (InvalidProtocolBufferException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		return builder;
+		return sc;
 
 	}
 
 	@Override
-	public SC.Builder buyCommodity(int commodityId, int num) {
+	public SC buyCommodity(int commodityId, int num) {
 		// TODO Auto-generated method stub
-		SC.Builder builder = marketService.buyCommodity(commodityId, num);
+		SC sc = marketService.buyCommodity(commodityId, num);
 
 		try {
-			SC_BuyCommodity sc = SC_BuyCommodity.parseFrom(builder.getData());
-			uiController.noticeBuy(commodityId,num,sc.getSuccess());
+			SC_BuyCommodity scBuyCommodity = SC_BuyCommodity.parseFrom(sc.getData());
+			uiController.noticeBuy(commodityId,num,scBuyCommodity.getSuccess());
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return builder;
+		return sc;
 	}
 
 }

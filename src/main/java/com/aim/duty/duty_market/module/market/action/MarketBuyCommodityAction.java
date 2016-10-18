@@ -4,6 +4,7 @@ import org.apache.mina.core.session.IoSession;
 
 import com.aim.duty.duty_market.module.market.service.MarketService;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.CS_BuyCommodity;
+import com.aim.game_base.entity.net.base.Protocal.SC;
 import com.aim.game_base.entity.net.base.Protocal.SC.Builder;
 import com.aim.game_base.navigation.ActionSupport;
 import com.google.protobuf.ByteString;
@@ -23,9 +24,9 @@ public class MarketBuyCommodityAction implements ActionSupport {
 			CS_BuyCommodity cs = CS_BuyCommodity.parseFrom(data);
 			int commodityId = cs.getCommodityId();
 			int num = cs.getNum();
-			Builder builder = marketService.buyCommodity(commodityId, num);
-			if (builder != null) {
-				session.write(builder);
+			SC sc = marketService.buyCommodity(commodityId, num);
+			if (sc != null) {
+				session.write(sc);
 			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block

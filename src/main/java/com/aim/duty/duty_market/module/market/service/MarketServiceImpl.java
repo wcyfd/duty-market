@@ -51,8 +51,8 @@ public class MarketServiceImpl implements MarketService {
 	}
 
 	@Override
-	public SC.Builder saleCommodity(int price, byte propType, int num, String name, ByteString byteString) {
-		SC.Builder response = SC.newBuilder();
+	public SC saleCommodity(int price, byte propType, int num, String name, ByteString byteString) {
+		SC.Builder sc = SC.newBuilder();
 		SC_SaleCommodity.Builder scSaleCommodity = SC_SaleCommodity.newBuilder();
 
 		Commodity commodity = new Commodity();
@@ -66,20 +66,20 @@ public class MarketServiceImpl implements MarketService {
 
 		this.addCommodity(commodity);
 
-		return response.setData(
-				scSaleCommodity.setSuccess(ErrorCode.SUCCESS).setCommodityId(commodityId).build().toByteString());
+		return sc.setData(
+				scSaleCommodity.setSuccess(ErrorCode.SUCCESS).setCommodityId(commodityId).build().toByteString()).build();
 
 	}
 
 	@Override
-	public SC.Builder buyCommodity(int commodityId, int num) {
+	public SC buyCommodity(int commodityId, int num) {
 		SC.Builder builder = SC.newBuilder();
 		SC_BuyCommodity.Builder sc = SC_BuyCommodity.newBuilder();
 
 		Commodity commodity = MarketCache.commodityMap.get(commodityId);
 		if (commodity == null) {
 			sc.setSuccess(ErrorCode.MARKET_NO_COMMODITY);
-			return builder.setData(sc.build().toByteString());
+			return builder.setData(sc.build().toByteString()).build();
 		}
 
 		int sourceNum = commodity.getSaleNum();
@@ -89,7 +89,7 @@ public class MarketServiceImpl implements MarketService {
 
 		if (commodity.getSaleNum() == sourceNum) {
 			sc.setSuccess(ErrorCode.MARKET_COMMODITY_NOT_ENOUGH);
-			return builder.setData(sc.build().toByteString());
+			return builder.setData(sc.build().toByteString()).build();
 		}
 
 		sc.setAbstractProp(commodity.getSalePropData());
@@ -98,7 +98,7 @@ public class MarketServiceImpl implements MarketService {
 			MarketCache.propTypeCommodityMap.get(commodity.getSalePropType()).remove(commodity.getId());
 			MarketCache.commodityMap.remove(commodity.getId());
 		}
-		return builder.setData(sc.setSuccess(ErrorCode.SUCCESS).build().toByteString());
+		return builder.setData(sc.setSuccess(ErrorCode.SUCCESS).build().toByteString()).build();
 	}
 
 }
