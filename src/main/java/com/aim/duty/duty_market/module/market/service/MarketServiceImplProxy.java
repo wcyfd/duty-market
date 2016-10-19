@@ -1,5 +1,7 @@
 package com.aim.duty.duty_market.module.market.service;
 
+import org.apache.mina.core.session.IoSession;
+
 import com.aim.duty.duty_market.ui.UIController;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_BuyCommodity;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_SaleCommodity;
@@ -41,9 +43,10 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public SC saleCommodity(int price, byte propType,int num,String name, ByteString prop) {
+	public SC saleCommodity(int roleId, int price, byte propType, int num, String name,
+			ByteString prop) {
 		// TODO Auto-generated method stub
-		SC sc = marketService.saleCommodity(price, propType,num,name, prop);
+		SC sc = marketService.saleCommodity( roleId, price, propType, num, name, prop);
 		try {
 			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(sc.getData());
 			uiController.noticeAdd(data.getCommodityId());
@@ -57,13 +60,13 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public SC buyCommodity(int commodityId, int num) {
+	public SC buyCommodity(int roleId, int commodityId, int num) {
 		// TODO Auto-generated method stub
-		SC sc = marketService.buyCommodity(commodityId, num);
+		SC sc = marketService.buyCommodity( roleId, commodityId, num);
 
 		try {
 			SC_BuyCommodity scBuyCommodity = SC_BuyCommodity.parseFrom(sc.getData());
-			uiController.noticeBuy(commodityId,num,scBuyCommodity.getSuccess());
+			uiController.noticeBuy(commodityId, num, scBuyCommodity.getSuccess());
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

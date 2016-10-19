@@ -5,9 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.aim.duty.duty_base.common.ErrorCode;
 import com.aim.duty.duty_market.cache.MarketCache;
-import com.aim.duty.duty_market_entity.Commodity;
+import com.aim.duty.duty_market_entity.bo.Commodity;
+import com.aim.duty.duty_market_entity.common.MarketErrorCode;
+import com.aim.duty.duty_market_entity.navigation.MarketProtocalId;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_BuyCommodity;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_SaleCommodity;
 import com.aim.game_base.entity.net.base.Protocal.SC;
@@ -51,7 +52,7 @@ public class MarketServiceImpl implements MarketService {
 	}
 
 	@Override
-	public SC saleCommodity(int price, byte propType, int num, String name, ByteString byteString) {
+	public SC saleCommodity(int roleId, int price, byte propType, int num, String name, ByteString byteString) {
 		SC.Builder sc = SC.newBuilder();
 		SC_SaleCommodity.Builder scSaleCommodity = SC_SaleCommodity.newBuilder();
 
@@ -63,42 +64,53 @@ public class MarketServiceImpl implements MarketService {
 		commodity.setSaleNum(num);
 		commodity.setSaleName(name);
 		commodity.setSalePropData(byteString);
+		commodity.setRoleId(roleId);
 
 		this.addCommodity(commodity);
 
-		return sc.setData(
-				scSaleCommodity.setSuccess(ErrorCode.SUCCESS).setCommodityId(commodityId).build().toByteString()).build();
+		return sc
+				.setProtocal(MarketProtocalId.SALE_COMMODITY)
+				.setData(
+						scSaleCommodity.setSuccess(MarketErrorCode.SUCCESS).setCommodityId(commodityId).setRoleId(roleId)
+								.build().toByteString()).build();
 
 	}
 
 	@Override
-	public SC buyCommodity(int commodityId, int num) {
-		SC.Builder builder = SC.newBuilder();
-		SC_BuyCommodity.Builder sc = SC_BuyCommodity.newBuilder();
+	public SC buyCommodity(int roleId, int commodityId, int num) {
+		SC_BuyCommodity.Builder scBuyCommodityBuilder = SC_BuyCommodity.newBuilder();
 
 		Commodity commodity = MarketCache.commodityMap.get(commodityId);
 		if (commodity == null) {
-			sc.setSuccess(ErrorCode.MARKET_NO_COMMODITY);
-			return builder.setData(sc.build().toByteString()).build();
+			return SC.newBuilder().setProtocal(MarketProtocalId.BUY_COMMODITY)
+					.setData(scBuyCommodityBuilder.setSuccess(MarketErrorCode.MARKET_NO_COMMODITY).build().toByteString())
+					.build();
 		}
 
 		int sourceNum = commodity.getSaleNum();
 		int remainCount = sourceNum - num;
 
-		commodity.setSaleNum(remainCount >= 0 ? remainCount : 0);
-
-		if (commodity.getSaleNum() == sourceNum) {
-			sc.setSuccess(ErrorCode.MARKET_COMMODITY_NOT_ENOUGH);
-			return builder.setData(sc.build().toByteString()).build();
+		if (remainCount < 0) {
+			return SC
+					.newBuilder()
+					.setProtocal(MarketProtocalId.BUY_COMMODITY)
+					.setData(
+							scBuyCommodityBuilder.setSuccess(MarketErrorCode.MARKET_COMMODITY_NOT_ENOUGH).build()
+									.toByteString()).build();
 		}
 
-		sc.setAbstractProp(commodity.getSalePropData());
+		commodity.setSaleNum(remainCount >= 0 ? remainCount : 0);
 
 		if (commodity.getSaleNum() <= 0) {
 			MarketCache.propTypeCommodityMap.get(commodity.getSalePropType()).remove(commodity.getId());
 			MarketCache.commodityMap.remove(commodity.getId());
 		}
-		return builder.setData(sc.setSuccess(ErrorCode.SUCCESS).build().toByteString()).build();
+		return SC
+				.newBuilder()
+				.setProtocal(MarketProtocalId.BUY_COMMODITY)
+				.setData(
+						scBuyCommodityBuilder.setSuccess(MarketErrorCode.SUCCESS)
+								.setAbstractProp(commodity.getSalePropData()).build().toByteString()).build();
 	}
 
 }

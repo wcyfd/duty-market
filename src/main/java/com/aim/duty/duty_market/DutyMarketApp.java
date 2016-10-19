@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import com.aim.duty.duty_base.cache.ConstantCache;
 import com.aim.duty.duty_market.module.market.service.MarketService;
 import com.aim.duty.duty_market.navigation.ActionNavigation;
+import com.aim.duty.duty_market.navigation.ProtocalNavigation;
 import com.aim.duty.duty_market.net.ServerHandler;
 import com.aim.game_base.net.SpringContext;
 import com.aim.game_base.net.WanServer;
@@ -20,8 +21,8 @@ public class DutyMarketApp {
 	public static void main(String[] args) {
 		SpringContext.initSpringCtx(START_CONFIG_FILE);
 
-//		ConstantCache.init();
 		ActionNavigation.init();
+		ProtocalNavigation.init();
 
 		MarketService marketService = SpringContext.getBean("marketService");
 		marketService.serviceInit();

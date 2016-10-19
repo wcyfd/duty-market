@@ -24,7 +24,8 @@ public class MarketBuyCommodityAction implements ActionSupport {
 			CS_BuyCommodity cs = CS_BuyCommodity.parseFrom(data);
 			int commodityId = cs.getCommodityId();
 			int num = cs.getNum();
-			SC sc = marketService.buyCommodity(commodityId, num);
+			int roleId = cs.getRoleId();
+			SC sc = marketService.buyCommodity(roleId,commodityId, num);
 			if (sc != null) {
 				session.write(sc);
 			}

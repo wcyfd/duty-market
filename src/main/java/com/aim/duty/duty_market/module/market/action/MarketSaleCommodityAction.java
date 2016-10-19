@@ -28,7 +28,8 @@ public class MarketSaleCommodityAction implements ActionSupport {
 			byte propType = (byte) po.getPropType();
 			String name = po.getName();
 			ByteString prop = po.getAbstractProp();
-			SC sc = marketService.saleCommodity(price, propType, num, name, prop);
+			int roleId = po.getRoleId();
+			SC sc = marketService.saleCommodity(roleId,price, propType, num, name, prop);
 			if (sc != null)
 				session.write(sc);
 		} catch (InvalidProtocolBufferException e) {

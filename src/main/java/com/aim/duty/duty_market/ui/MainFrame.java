@@ -12,7 +12,7 @@ import java.util.Observer;
 import javax.swing.table.DefaultTableModel;
 
 import com.aim.duty.duty_market.cache.MarketCache;
-import com.aim.duty.duty_market_entity.Commodity;
+import com.aim.duty.duty_market_entity.bo.Commodity;
 
 /**
  *

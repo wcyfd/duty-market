@@ -10,10 +10,11 @@
 
 	<bean id="navigation" class="com.aim.duty.duty_market.navigation.ActionNavigation" 
 		p:marketSaleCommodityAction-ref="marketSaleCommodityAction" 
-		
-		/>
+		p:marketBuyCommodityAction-ref="marketBuyCommodityAction"
+	/>
 
 	<bean id="marketSaleCommodityAction" class="com.aim.duty.duty_market.module.market.action.MarketSaleCommodityAction" p:marketService-ref="marketService" />
+	<bean id="marketBuyCommodityAction" class="com.aim.duty.duty_market.module.market.action.MarketBuyCommodityAction" p:marketService-ref="marketService" />
 
 
 </beans>

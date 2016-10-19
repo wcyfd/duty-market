@@ -6,7 +6,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.aim.duty.duty_base.service.prop.PropConstant;
-import com.aim.duty.duty_market_entity.Commodity;
+import com.aim.duty.duty_market_entity.bo.Commodity;
 
 public class MarketCache {
 	private static int id = 0;

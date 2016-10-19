@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import com.aim.duty.duty_base.common.ErrorCode;
-import com.aim.duty.duty_market.cache.MarketCache;
-import com.aim.duty.duty_market_entity.Commodity;
+import com.aim.duty.duty_market_entity.common.MarketErrorCode;
 
 public class UIController extends Observable {
 	private MainFrame mainFrame;
@@ -29,7 +27,7 @@ public class UIController extends Observable {
 	}
 
 	public void noticeBuy(int commodityId, int num, int success) {
-		if (success != ErrorCode.SUCCESS) {
+		if (success != MarketErrorCode.SUCCESS) {
 			return;
 		}
 
