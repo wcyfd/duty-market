@@ -95,7 +95,7 @@ public class MarketServiceImpl implements MarketService {
 					.newBuilder()
 					.setProtocal(MarketProtocalId.BUY_COMMODITY)
 					.setData(
-							scBuyCommodityBuilder.setSuccess(MarketErrorCode.MARKET_COMMODITY_NOT_ENOUGH).build()
+							scBuyCommodityBuilder.setSuccess(MarketErrorCode.MARKET_COMMODITY_NOT_ENOUGH).setRoleId(roleId).build()
 									.toByteString()).build();
 		}
 
@@ -110,7 +110,7 @@ public class MarketServiceImpl implements MarketService {
 				.setProtocal(MarketProtocalId.BUY_COMMODITY)
 				.setData(
 						scBuyCommodityBuilder.setSuccess(MarketErrorCode.SUCCESS)
-								.setAbstractProp(commodity.getSalePropData()).build().toByteString()).build();
+				.setAbstractProp(commodity.getSalePropData()).setRoleId(roleId).setPropType(commodity.getSalePropType()).setNum(num).setSinglePrice(commodity.getSinglePrice()).build().toByteString()).build();
 	}
 
 }
