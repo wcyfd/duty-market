@@ -4,8 +4,8 @@ import org.apache.mina.core.session.IoSession;
 
 import com.aim.duty.duty_market.module.market.service.MarketService;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.CS_SaleCommodity;
-import com.aim.game_base.entity.net.base.Protocal.SC;
-import com.aim.game_base.entity.net.base.Protocal.SC.Builder;
+import com.aim.game_base.entity.net.base.Protocal.PT;
+import com.aim.game_base.entity.net.base.Protocal.PT.Builder;
 import com.aim.game_base.navigation.ActionSupport;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -29,7 +29,7 @@ public class MarketSaleCommodityAction implements ActionSupport {
 			String name = po.getName();
 			ByteString prop = po.getAbstractProp();
 			int roleId = po.getRoleId();
-			SC sc = marketService.saleCommodity(roleId,price, propType, num, name, prop);
+			PT sc = marketService.saleCommodity(roleId,price, propType, num, name, prop);
 			if (sc != null)
 				session.write(sc);
 		} catch (InvalidProtocolBufferException e) {

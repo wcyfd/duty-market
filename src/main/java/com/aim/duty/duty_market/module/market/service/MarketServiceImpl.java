@@ -11,7 +11,7 @@ import com.aim.duty.duty_market_entity.common.MarketErrorCode;
 import com.aim.duty.duty_market_entity.navigation.MarketProtocalId;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_BuyCommodity;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_SaleCommodity;
-import com.aim.game_base.entity.net.base.Protocal.SC;
+import com.aim.game_base.entity.net.base.Protocal.PT;
 import com.google.protobuf.ByteString;
 
 public class MarketServiceImpl implements MarketService {
@@ -52,8 +52,8 @@ public class MarketServiceImpl implements MarketService {
 	}
 
 	@Override
-	public SC saleCommodity(int roleId, int price, byte propType, int num, String name, ByteString byteString) {
-		SC.Builder sc = SC.newBuilder();
+	public PT saleCommodity(int roleId, int price, byte propType, int num, String name, ByteString byteString) {
+		PT.Builder sc = PT.newBuilder();
 		SC_SaleCommodity.Builder scSaleCommodity = SC_SaleCommodity.newBuilder();
 
 		Commodity commodity = new Commodity();
@@ -77,12 +77,12 @@ public class MarketServiceImpl implements MarketService {
 	}
 
 	@Override
-	public SC buyCommodity(int roleId, int commodityId, int num) {
+	public PT buyCommodity(int roleId, int commodityId, int num) {
 		SC_BuyCommodity.Builder scBuyCommodityBuilder = SC_BuyCommodity.newBuilder();
 
 		Commodity commodity = MarketCache.commodityMap.get(commodityId);
 		if (commodity == null) {
-			return SC.newBuilder().setProtocal(MarketProtocalId.BUY_COMMODITY)
+			return PT.newBuilder().setProtocal(MarketProtocalId.BUY_COMMODITY)
 					.setData(scBuyCommodityBuilder.setSuccess(MarketErrorCode.MARKET_NO_COMMODITY).build().toByteString())
 					.build();
 		}
@@ -91,7 +91,7 @@ public class MarketServiceImpl implements MarketService {
 		int remainCount = sourceNum - num;
 
 		if (remainCount < 0) {
-			return SC
+			return PT
 					.newBuilder()
 					.setProtocal(MarketProtocalId.BUY_COMMODITY)
 					.setData(
@@ -105,7 +105,7 @@ public class MarketServiceImpl implements MarketService {
 			MarketCache.propTypeCommodityMap.get(commodity.getSalePropType()).remove(commodity.getId());
 			MarketCache.commodityMap.remove(commodity.getId());
 		}
-		return SC
+		return PT
 				.newBuilder()
 				.setProtocal(MarketProtocalId.BUY_COMMODITY)
 				.setData(

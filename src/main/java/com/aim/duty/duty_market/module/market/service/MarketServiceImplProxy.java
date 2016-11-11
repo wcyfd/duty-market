@@ -5,7 +5,7 @@ import org.apache.mina.core.session.IoSession;
 import com.aim.duty.duty_market.ui.UIController;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_BuyCommodity;
 import com.aim.duty.duty_market_entity.protobuf.protocal.market.MarketProtocal.SC_SaleCommodity;
-import com.aim.game_base.entity.net.base.Protocal.SC;
+import com.aim.game_base.entity.net.base.Protocal.PT;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -43,10 +43,10 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public SC saleCommodity(int roleId, int price, byte propType, int num, String name,
+	public PT saleCommodity(int roleId, int price, byte propType, int num, String name,
 			ByteString prop) {
 		// TODO Auto-generated method stub
-		SC sc = marketService.saleCommodity( roleId, price, propType, num, name, prop);
+		PT sc = marketService.saleCommodity( roleId, price, propType, num, name, prop);
 		try {
 			SC_SaleCommodity data = SC_SaleCommodity.parseFrom(sc.getData());
 			uiController.noticeAdd(data.getCommodityId());
@@ -60,9 +60,9 @@ public class MarketServiceImplProxy implements MarketService {
 	}
 
 	@Override
-	public SC buyCommodity(int roleId, int commodityId, int num) {
+	public PT buyCommodity(int roleId, int commodityId, int num) {
 		// TODO Auto-generated method stub
-		SC sc = marketService.buyCommodity( roleId, commodityId, num);
+		PT sc = marketService.buyCommodity( roleId, commodityId, num);
 
 		try {
 			SC_BuyCommodity scBuyCommodity = SC_BuyCommodity.parseFrom(sc.getData());

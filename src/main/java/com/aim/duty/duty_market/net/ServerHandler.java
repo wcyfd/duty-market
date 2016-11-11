@@ -4,11 +4,11 @@ import org.apache.mina.core.session.IoSession;
 
 import com.aim.duty.duty_market.navigation.ActionNavigation;
 import com.aim.duty.duty_market.navigation.ProtocalNavigation;
-import com.aim.game_base.entity.net.base.Protocal.CS;
-import com.aim.game_base.entity.net.base.Protocal.SC;
+import com.aim.game_base.entity.net.base.Protocal.PT;
+import com.aim.game_base.entity.net.base.Protocal.PT;
 import com.aim.game_base.navigation.ActionSupport;
 import com.aim.game_base.net.IoHandlerAdapter;
-import com.aim.game_base.net.ProtobufMessagePrinter;
+import com.aim.game_base.net.protocal.proto.ProtobufMessagePrinter;
 
 //import byCodeGame.game.cache.local.RoleCache;
 //import byCodeGame.game.entity.bo.Role;
@@ -104,7 +104,7 @@ public class ServerHandler extends IoHandlerAdapter {
 //		}
 		
 		
-		CS message = (CS) messageObj;
+		PT message = (PT) messageObj;
 
 		if (null == message) {
 			System.out.println("ERR_MESSAGE_REC");
@@ -148,7 +148,7 @@ public class ServerHandler extends IoHandlerAdapter {
 //		// }
 //		//
 		
-		SC sc = (SC) message;
+		PT sc = (PT) message;
 		Class<?> clazz = ProtocalNavigation.getClassByProtocalId(sc.getProtocal());
 		System.out.println("marketServer");
 		System.out.println("服务器回写指令号" + sc.getProtocal());
